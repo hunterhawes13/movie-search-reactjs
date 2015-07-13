@@ -28,13 +28,14 @@ var Container = React.createClass({
     });
   },
   fetchFavorites: function() {
+    // Fetch favorites from server
     $.ajax({
       type: 'GET',
       url: '/favorites',
       contentType: 'application/json',
       dataType: 'json',
       success: function(data) {
-        $("#favoritesPlaceholder").hide();
+        $("#favoritesPlaceholder").hide(); // hide placeholder when there is content
         this.setState({favoritesData: data});
       }.bind(this),
       error: function(e) {
@@ -49,6 +50,7 @@ var Container = React.createClass({
     };
   },
   componentDidMount: function() {
+    // Listen to state in change fetchFavorites then re-render
     this.fetchFavorites();
   },
   render: function() {

@@ -1,12 +1,15 @@
 var SearchForm = React.createClass({
   handleSubmit: function(e) {
+    // When user clicks search get the movie title and feed it
+    // to the onSearchSubmit function in Container class to
+    // fetch OMDB data
     e.preventDefault();
     var title = React.findDOMNode(this.refs.title).value.trim();
     if(!title) {
       return;
     }
     this.props.onSearchSubmit({title: title});
-    React.findDOMNode(this.refs.title).value = '';
+    React.findDOMNode(this.refs.title).value = ''; // Clear form value
     return;
   },
   render: function() {

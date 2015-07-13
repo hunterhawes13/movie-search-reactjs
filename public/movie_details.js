@@ -1,11 +1,15 @@
 var MovieDetails = React.createClass({
-  handleFavorite: function() {
+  handleFavorite: function(e) {
+    e.preventDefault();
+    // Updates favorites on the server presistant storage
     $.ajax({
       type: "POST",
       url: "/favorites",
       data: this.props.detailData,
       dataType: "json",
       success: function(data) {
+        // When successfully updated on the server make favorite button active
+        // to indicate that it has been favorited
         $(".favorite#"+this.props.detailData.imdbID).addClass("active");
       }.bind(this),
       error: function(e) {
