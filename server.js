@@ -8,14 +8,17 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// Root path will read from public directory
 app.use('/', express.static(path.join(__dirname, 'public')));
 
+// Read favorites from data.json and return it for GET /favorites
 app.get('/favorites', function(req, res){
   var data = fs.readFileSync('./data.json');
   res.setHeader('Content-Type', 'application/json');
   res.send(data);
 });
 
+// Update favorites in data.json for POST /favorites
 app.post('/favorites', function(req, res){
   console.log("favorites", req.body);
   if(!req.body.Title || !req.body.imdbID){
