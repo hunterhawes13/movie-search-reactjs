@@ -19,12 +19,12 @@ This app was re-written using React.js. Below is my evaluation of the integratin
 
 
 ##Cons:
-- Opinionated, so not being familiar with the conventions can make it difficult to build an app.
+- Opinionated, so there is a learning curve to become familiar with the conventions.
 
-- Requires some experience with JavaScript, web socket, server, and HTTP to use effectively, so not very beginner friendly.
+- Requires some experience with JavaScript, web socket, server, and HTTP to have an idea of how React works, so not very beginner friendly.
 
-- Does not have conventional HTML files. Everything is Javascript, so a beginner may not be able to wrap their mind around it right off the bat.
+- Does not have conventional HTML files. Everything is Javascript, which is not standard for a beginner.
 
 - Does not support all standard HTML attributes. For example, to declare a class you must use className, which could lead to a lot of simple errors.
 
-- Has reactive feature that could be abused by beginners, which leads to poor performance.
+- Has reactive features that could be abused by beginners, which leads to poor app performance.
