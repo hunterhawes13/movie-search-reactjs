@@ -17,9 +17,10 @@ app.get('/favorites', function(req, res){
 });
 
 app.post('/favorites', function(req, res){
-  if(!req.body.name || !req.body.oid){
-    res.send("Error");
-    return
+  console.log("favorites", req.body);
+  if(!req.body.Title || !req.body.imdbID){
+    res.status(500).send('No name or id');
+    return;
   }
   var data = JSON.parse(fs.readFileSync('./data.json'));
   data.push(req.body);
