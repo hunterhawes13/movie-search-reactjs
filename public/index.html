@@ -49,8 +49,15 @@
         render: function() {
           return (
             <div className='container'>
-              <h1>Movie Search</h1>
-              <SearchForm onSearchSubmit={this.handleSearchSubmit} />
+              <nav className="navbar navbar-default">
+                <div className="container-fluid">
+                  <div className="navbar-header">
+                    <a className="navbar-brand" href="/">Movie Search</a>
+                  </div>
+                  <SearchForm onSearchSubmit={this.handleSearchSubmit} />
+                </div>
+              </nav>
+
               <MovieList data={this.state.data} />
             </div>
           );
@@ -167,7 +174,7 @@
         },
         render: function() {
           return (
-            <form className='searchForm form-inline'>
+            <form className="searchForm navbar-form navbar-right" role="search">
               <div className='form-group'>
                 <input type='text' className='form-control' placeholder='Search for a movie' ref='title' />
               </div>
