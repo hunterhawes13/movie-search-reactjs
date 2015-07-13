@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GA Movies</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script type="text/jsx">
+      var Container = React.createClass({
+        handleSearchSubmit: function(search){
+          // Need to get title in the form of 'Star+Wars' for 'Star Wars' for OMBD API
+          var title = search.title.split(" ").join("+");
+
+          // Do a search request to OMBD for movies matching the title
+          $.ajax({
+            type: 'GET',
+            url: 'http://www.omdbapi.com/?s='+title+'&r=json',
+            async: false,
+            jsonpCallback: 'jsonCallback',
+            contentType: "application/json",
+            dataType: 'jsonp',
+            success: function(data) {
+               this.setState({data: data.Search});
+            }.bind(this),
+            error: function(e) {
+               console.log("error", e);
+            }
+          });
+
+        },
+        getInitialState: function () {
+          return {data: []};
+        },
+        render: function() {
+          return (
+            <div className="container">
+              <h1>Movie Search</h1>
+              <SearchForm onSearchSubmit={this.handleSearchSubmit} />
+              <MovieList data={this.state.data} />
+            </div>
+          );
+        }
+      });
+      var MovieList = React.createClass({
+        render: function() {
+          var movieNodes = this.props.data.map(function (movie, index) {
+            return (
+              <Movie title={movie.Title} key={index} />
+            );
+          });
+          return (
+            <ul className="movieList">
+              {movieNodes}
+            </ul>
+          );
+        }
+      });
+      var Movie = React.createClass({
+        render: function() {
+          return (
+            <li className="movie">
+              <h2 className="movieTitle">{this.props.title}</h2>
+            </li>
+          );
+        }
+      });
+      var SearchForm = React.createClass({
+        handleSubmit: function(e) {
+          e.preventDefault();
+          var title = React.findDOMNode(this.refs.title).value.trim();
+          if(!title) {
+            return;
+          }
+          this.props.onSearchSubmit({title: title});
+          React.findDOMNode(this.refs.title).value = '';
+          return;
+        },
+        render: function() {
+          return (
+            <form className="searchForm" onSubmit={this.handleSubmit}>
+              <input type="text" placeholder="Search for a movie" ref="title" />
+              <input type="submit" value="Search" />
+            </form>
+          );
+        }
+      });
+
+      React.render(
+        <Container />,
+        document.getElementById('content')
+      );
+    </script>
+  </body>
+</html>
