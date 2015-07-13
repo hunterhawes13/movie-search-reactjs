@@ -20,7 +20,7 @@
           // Do a search request to OMBD for movies matching the title
           $.ajax({
             type: 'GET',
-            url: 'http://www.omdbapi.com/?s='+title+'&r=json',
+            url: '//www.omdbapi.com/?s='+title+'&r=json',
             async: false,
             jsonpCallback: 'jsonCallback',
             contentType: 'application/json',
@@ -66,7 +66,6 @@
           this.fetchFavorites();
         },
         render: function() {
-          console.log("render favoritesData", this.favoritesData);
           return (
             <div className='container'>
               <nav className="navbar navbar-inverse">
@@ -97,7 +96,6 @@
       });
       var MovieList = React.createClass({
         render: function() {
-          console.log("this.props.data", this.props.data);
           if(!this.props.data.error) {
             var movieNodes = this.props.data.map(function (movie, index) {
               return (
@@ -121,7 +119,7 @@
           var callback = 'c'+Math.floor((Math.random()*100000000)+1);
           $.ajax({
             type: 'GET',
-            url: 'http://www.omdbapi.com/?i='+id+'&y=&plot=short&r=json?',
+            url: '//www.omdbapi.com/?i='+id+'&y=&plot=short&r=json?',
             async: false,
             jsonpCallback: callback,
             contentType: 'application/json',
@@ -154,7 +152,6 @@
       });
       var MovieDetails = React.createClass({
         handleFavorite: function() {
-          console.log("details", this.props.detailData);
           $.ajax({
             type: "POST",
             url: "/favorites",
