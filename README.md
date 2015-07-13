@@ -2,11 +2,7 @@
 
 See live site on [Heroku](https://aqueous-wildwood-9541.herokuapp.com/)
 
-This app was re-written using React.js and was initially written with plane HTML and Jade.
-
-For me this was all brand new. I have never worked with React, Express, or Jade, so it really gave me a fresh perspective as a first time user.
-
-Below is my evaluation of the integrating the React MVC framework.
+This app was re-written using React.js. Below is my evaluation of the integrating the React MVC framework.
 
 ##Pros:
 - Opinionated, so there is are guidelines on development.
