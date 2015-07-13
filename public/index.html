@@ -7,7 +7,6 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
-    <!-- <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css'> -->
   </head>
   <body>
     <div id='content'></div>
@@ -28,8 +27,9 @@
             dataType: 'jsonp',
             success: function(data) {
               if(data.Search) {
+                $("#searchPlaceholder").hide();
                 // OMDB API returns {Search: [{...}]} on successful search
-                this.setState({data: data.Search});
+                this.setState({searchData: data.Search});
                 return;
               }
               // OMDB API returns {Response: 'False', Error: 'Movie not found!'}
@@ -48,7 +48,7 @@
             contentType: 'application/json',
             dataType: 'json',
             success: function(data) {
-              console.log("favorites", data);
+              $("#favoritesPlaceholder").hide();
               this.setState({favoritesData: data});
             }.bind(this),
             error: function(e) {
@@ -58,13 +58,12 @@
         },
         getInitialState: function() {
           return {
-            data: [],
+            searchData: [],
             favoritesData: []
           };
         },
         componentDidMount: function() {
           this.fetchFavorites();
-          // setInterval(this.fetchFavorites, 200);
         },
         render: function() {
           console.log("render favoritesData", this.favoritesData);
@@ -84,10 +83,12 @@
               </ul>
               <div className="tab-content">
                 <div role="tabpanel" className="tab-pane active" id="search">
-                  <MovieList data={this.state.data} />
+                  <MovieList data={this.state.searchData} />
+                  <h3 id="searchPlaceholder">Search For Some Movies!</h3>
                 </div>
                 <div role="tabpanel" className="tab-pane" id="favorites">
                   <MovieList data={this.state.favoritesData} />
+                  <h3 id="favoritesPlaceholder">Favorite Some Movies!</h3>
                 </div>
               </div>
             </div>
