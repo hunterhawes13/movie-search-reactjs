@@ -1,19 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang='en'>
   <head>
     <title>GA Movies</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
+    <!-- <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css'> -->
   </head>
   <body>
-    <div id="content"></div>
-    <script type="text/jsx">
+    <main class='container'>
+      <div id='content'></div>
+    </main>
+
+    <script type='text/jsx'>
       var Container = React.createClass({
         handleSearchSubmit: function(search){
           // Need to get title in the form of 'Star+Wars' for 'Star Wars' for OMBD API
-          var title = search.title.split(" ").join("+");
+          var title = search.title.split(' ').join('+');
 
           // Do a search request to OMBD for movies matching the title
           $.ajax({
@@ -29,22 +34,21 @@
                 this.setState({data: data.Search});
                 return;
               }
-              // OMDB API returns {Response: "False", Error: "Movie not found!"}
+              // OMDB API returns {Response: 'False', Error: 'Movie not found!'}
               // when search is unsuccessful. Poor API conventions.
               this.setState({data: {error: data.Error}});
             }.bind(this),
             error: function(e) {
-               console.log("error", e);
+               console.log('error', e);
             }
           });
-
         },
         getInitialState: function () {
           return {data: []};
         },
         render: function() {
           return (
-            <div className="container">
+            <div className='container'>
               <h1>Movie Search</h1>
               <SearchForm onSearchSubmit={this.handleSearchSubmit} />
               <MovieList data={this.state.data} />
@@ -57,26 +61,73 @@
           if(!this.props.data.error) {
             var movieNodes = this.props.data.map(function (movie, index) {
               return (
-                <Movie title={movie.Title} key={index} />
+                <Movie title={movie.Title} id={movie.imdbID} key={index} />
               );
             });
             return (
-              <ul className="movieList">
+              <ul className='movieList list-group'>
                 {movieNodes}
               </ul>
             );
           }
           return (
-            <h2>No Results Found</h2>
+            <h2>No Results Found!</h2>
           );
         }
       });
       var Movie = React.createClass({
+        fetchMovieDetails: function(id) {
+          var callback = 'c'+Math.floor((Math.random()*100000000)+1);
+          $.ajax({
+            type: 'GET',
+            url: 'http://www.omdbapi.com/?i='+id+'&y=&plot=short&r=json?',
+            async: false,
+            jsonpCallback: callback,
+            contentType: 'application/json',
+            dataType: 'jsonp',
+            success: function(data) {
+              console.log('movie details', data);
+              this.setState({detailData: data});
+            }.bind(this),
+            error: function(e) {
+               console.log('error', e);
+            }
+          });
+        },
+        getInitialState: function () {
+          return {detailData: []};
+        },
+        componentDidMount: function() {
+          this.fetchMovieDetails(this.props.id);
+        },
         render: function() {
           return (
-            <li className="movie">
-              <h2 className="movieTitle">{this.props.title}</h2>
+            <li className='movie list-group-item'>
+              <a href={'#'+this.props.id} className='movieTitle' data-toggle='collapse'>{this.props.title}</a>
+              <MovieDetails detailData={this.state.detailData} id={this.props.id} />
             </li>
+          );
+        }
+      });
+      var MovieDetails = React.createClass({
+        render: function() {
+          return (
+            <div className='movieDetail collapse' id={this.props.id}>
+              <div className='row'>
+                <div className='col-sm-4'>
+                  <img src={this.props.detailData.Poster} />
+                </div>
+                <div className='col-sm-8'>
+                  <div className='row'>
+                    <h4>
+                      IMDB Rating: <small>{this.props.detailData.imdbRating} from {this.props.detailData.imdbVotes} votes</small>
+                    </h4>
+                  </div>
+                  <p className='row'>{this.props.detailData.Plot}</p>
+                </div>
+              </div>
+
+            </div>
           );
         }
       });
@@ -93,9 +144,11 @@
         },
         render: function() {
           return (
-            <form className="searchForm" onSubmit={this.handleSubmit}>
-              <input type="text" placeholder="Search for a movie" ref="title" />
-              <input type="submit" value="Search" />
+            <form className='searchForm form-inline'>
+              <div className='form-group'>
+                <input type='text' className='form-control' placeholder='Search for a movie' ref='title' />
+              </div>
+              <a role='button' className='btn btn-primary' onClick={this.handleSubmit}>Search</a>
             </form>
           );
         }
