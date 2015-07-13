@@ -21,10 +21,17 @@
             url: 'http://www.omdbapi.com/?s='+title+'&r=json',
             async: false,
             jsonpCallback: 'jsonCallback',
-            contentType: "application/json",
+            contentType: 'application/json',
             dataType: 'jsonp',
             success: function(data) {
-               this.setState({data: data.Search});
+              if(data.Search) {
+                // OMDB API returns {Search: [{...}]} on successful search
+                this.setState({data: data.Search});
+                return;
+              }
+              // OMDB API returns {Response: "False", Error: "Movie not found!"}
+              // when search is unsuccessful. Poor API conventions.
+              this.setState({data: {error: data.Error}});
             }.bind(this),
             error: function(e) {
                console.log("error", e);
@@ -47,15 +54,20 @@
       });
       var MovieList = React.createClass({
         render: function() {
-          var movieNodes = this.props.data.map(function (movie, index) {
+          if(!this.props.data.error) {
+            var movieNodes = this.props.data.map(function (movie, index) {
+              return (
+                <Movie title={movie.Title} key={index} />
+              );
+            });
             return (
-              <Movie title={movie.Title} key={index} />
+              <ul className="movieList">
+                {movieNodes}
+              </ul>
             );
-          });
+          }
           return (
-            <ul className="movieList">
-              {movieNodes}
-            </ul>
+            <h2>No Results Found</h2>
           );
         }
       });
