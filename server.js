@@ -20,7 +20,6 @@ app.get('/favorites', function(req, res){
 
 // Update favorites in data.json for POST /favorites
 app.post('/favorites', function(req, res){
-  console.log("favorites", req.body);
   if(!req.body.Title || !req.body.imdbID){
     res.status(500).send('No name or id');
     return;
